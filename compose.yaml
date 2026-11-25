@@ -1,0 +1,21 @@
+# PostgreSQL 17 + pgvector. BM25 se calcula en SQL estándar, sin extensiones extra.
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: hybrid_rag
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-testing.sql:/docker-entrypoint-initdb.d/10-testing.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d hybrid_rag"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
